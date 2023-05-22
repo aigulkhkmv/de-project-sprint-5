@@ -21,8 +21,3 @@ CREATE TABLE dds.dm_delivery (
 	CONSTRAINT dm_deliveries_courier_id_fkey FOREIGN KEY (courier_id) REFERENCES dds.dm_couriers(id),
     CONSTRAINT dm_deliveries_order_id_fkey FOREIGN KEY (order_id) REFERENCES dds.dm_orders(id)
 );
-
--- add delivery_id into existing dm_orders table
--- add foreign key for relation with dds.dm_delivery
--- ALTER TABLE dds.dm_orders ADD COLUMN delivery_id int;
--- ALTER TABLE dds.dm_orders ADD CONSTRAINT dm_orders_delivery_id_fkey FOREIGN KEY (delivery_id) REFERENCES dds.dm_delivery(id);
