@@ -2,30 +2,30 @@ import os
 import sys
 
 import pendulum
-from airflow.decorators import dag, task
-from dags.stg_loader_dags.api_data_loader import RawAPIDataLoader
 
 sys.path.append(os.path.realpath("../"))
+from airflow.decorators import dag, task
+from dds2cdm.cdm_loader import DataLoader
 from connector import ConnectionBuilder
 
 
 @dag(
-    schedule_interval="0/15 * * * *",
+    schedule_interval="0/60 * * * *",
     start_date=pendulum.datetime(2023, 5, 12, tz="UTC"),
     catchup=False,
     tags=["origin2stg"],
     is_paused_upon_creation=True,
 )
-def stg_couriers_dag():
+def cdm_courier_ledger_dag():
     dwh_connect = ConnectionBuilder.pg_conn("PG_WAREHOUSE_CONNECTION")
 
-    @task(task_id="stg_courier_load")
+    @task(task_id="cdm_courier_ledger")
     def load():
-        courier_loader = RawAPIDataLoader(dwh_connect)
-        courier_loader.load_couriers()
+        report_loader = DataLoader(dwh_connect)
+        report_loader.load_report()
 
     load_dict = load()
     load_dict  #
 
 
-stg_couriers_dag = stg_couriers_dag()
+cdm_courier_ledger_dag = cdm_courier_ledger_dag()

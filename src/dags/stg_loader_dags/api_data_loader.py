@@ -9,9 +9,8 @@ from psycopg.rows import class_row
 from pydantic import BaseModel
 from requests import get
 
-sys.path.append(os.path.realpath('../'))
+sys.path.append(os.path.realpath("../"))
 from scripts import json2str
-
 
 
 class RawCourier(BaseModel):
@@ -48,7 +47,9 @@ class StgEtlSettingsRepository:
 
         return obj
 
-    def save_setting(self, conn: Connection, workflow_key: str, workflow_settings: str) -> None:
+    def save_setting(
+        self, conn: Connection, workflow_key: str, workflow_settings: str
+    ) -> None:
         with conn.cursor() as cur:
             cur.execute(
                 """
@@ -57,10 +58,7 @@ class StgEtlSettingsRepository:
                     ON CONFLICT (workflow_key) DO UPDATE
                     SET workflow_settings = EXCLUDED.workflow_settings;
                 """,
-                {
-                    "etl_key": workflow_key,
-                    "etl_setting": workflow_settings
-                },
+                {"etl_key": workflow_key, "etl_setting": workflow_settings},
             )
 
 
@@ -70,9 +68,9 @@ class RawAPIDataLoader:
         self.settings_repository = StgEtlSettingsRepository()
         self.wf_key_couriers = "couriers_origin_to_stg_workflow"
         self.wf_key_deliveries = "deliveries_origin_to_stg_workflow"
-        self.api_nickname = "aigulkhkmv"
+        self.api_nickname = "NICKNAME"
         self.api_cohort = "12"
-        self.api_key = "25c27781-8fde-4b30-a22e-524044a7580f"
+        self.api_key = "API_KEY"
         self.api_header = {
             "X-Nickname": self.api_nickname,
             "X-Cohort": self.api_cohort,

@@ -29,7 +29,9 @@ class StgEtlSettingsRepository:
 
         return obj
 
-    def save_setting(self, conn: Connection, workflow_key: str, workflow_settings: str) -> None:
+    def save_setting(
+        self, conn: Connection, workflow_key: str, workflow_settings: str
+    ) -> None:
         with conn.cursor() as cur:
             cur.execute(
                 """
@@ -38,8 +40,5 @@ class StgEtlSettingsRepository:
                     ON CONFLICT (workflow_key) DO UPDATE
                     SET workflow_settings = EXCLUDED.workflow_settings;
                 """,
-                {
-                    "etl_key": workflow_key,
-                    "etl_setting": workflow_settings
-                },
+                {"etl_key": workflow_key, "etl_setting": workflow_settings},
             )

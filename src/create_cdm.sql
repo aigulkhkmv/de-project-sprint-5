@@ -2,7 +2,7 @@ CREATE TABLE cdm.dm_courier_ledger (
 	id serial4 NOT NULL,
 	courier_id varchar NOT NULL,
 	courier_name varchar NOT NULL,
-	settlement_year date NOT NULL,
+	settlement_year int NOT NULL,
 	settlement_month int NOT NULL, 
 	orders_count int4 NOT NULL DEFAULT 0,
 	orders_total_sum numeric(14, 2) NOT NULL DEFAULT 0,

@@ -15,9 +15,8 @@ from psycopg.rows import class_row
 from pydantic import BaseModel
 from requests import get
 
-sys.path.append(os.path.realpath('../'))
+sys.path.append(os.path.realpath("../"))
 from connector import ConnectionBuilder, PgConnect
-
 
 
 def json2str(obj: Any) -> str:
@@ -43,9 +42,13 @@ def to_dict(obj, classkey=None):
     elif hasattr(obj, "__iter__") and not isinstance(obj, str):
         return [to_dict(v, classkey) for v in obj]
     elif hasattr(obj, "__dict__"):
-        data = dict([(key, to_dict(value, classkey))
-                     for key, value in obj.__dict__.items()
-                     if not callable(value) and not key.startswith('_')])
+        data = dict(
+            [
+                (key, to_dict(value, classkey))
+                for key, value in obj.__dict__.items()
+                if not callable(value) and not key.startswith("_")
+            ]
+        )
         if classkey is not None and hasattr(obj, "__class__"):
             data[classkey] = obj.__class__.__name__
         return data
@@ -54,7 +57,15 @@ def to_dict(obj, classkey=None):
 
 
 class PgConnect:
-    def __init__(self, host: str, port: str, db_name: str, user: str, pw: str, sslmode: str = "require") -> None:
+    def __init__(
+        self,
+        host: str,
+        port: str,
+        db_name: str,
+        user: str,
+        pw: str,
+        sslmode: str = "require",
+    ) -> None:
         self.host = host
         self.port = int(port)
         self.db_name = db_name
@@ -77,7 +88,8 @@ class PgConnect:
             db_name=self.db_name,
             user=self.user,
             pw=self.pw,
-            sslmode=self.sslmode)
+            sslmode=self.sslmode,
+        )
 
     def client(self):
         return psycopg.connect(self.url())
@@ -104,12 +116,14 @@ class ConnectionBuilder:
         if "sslmode" in conn.extra_dejson:
             sslmode = conn.extra_dejson["sslmode"]
 
-        pg = PgConnect(str(conn.host),
-                       str(conn.port),
-                       str(conn.schema),
-                       str(conn.login),
-                       str(conn.password),
-                       sslmode)
+        pg = PgConnect(
+            str(conn.host),
+            str(conn.port),
+            str(conn.schema),
+            str(conn.login),
+            str(conn.password),
+            sslmode,
+        )
 
         return pg
 
@@ -148,7 +162,9 @@ class StgEtlSettingsRepository:
 
         return obj
 
-    def save_setting(self, conn: Connection, workflow_key: str, workflow_settings: str) -> None:
+    def save_setting(
+        self, conn: Connection, workflow_key: str, workflow_settings: str
+    ) -> None:
         with conn.cursor() as cur:
             cur.execute(
                 """
@@ -157,10 +173,7 @@ class StgEtlSettingsRepository:
                     ON CONFLICT (workflow_key) DO UPDATE
                     SET workflow_settings = EXCLUDED.workflow_settings;
                 """,
-                {
-                    "etl_key": workflow_key,
-                    "etl_setting": workflow_settings
-                },
+                {"etl_key": workflow_key, "etl_setting": workflow_settings},
             )
 
 

@@ -4,9 +4,10 @@ import sys
 import pendulum
 from airflow.decorators import dag, task
 
-sys.path.append(os.path.realpath('../'))
+sys.path.append(os.path.realpath("../"))
 from stg2dds.data_loader import StgDataLoader
 from connector import ConnectionBuilder
+
 
 @dag(
     schedule_interval="0/60 * * * *",
